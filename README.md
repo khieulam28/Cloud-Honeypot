@@ -1,272 +1,553 @@
 ☁️ Cloud Honeypot on OpenStack
-<p align="center"> <img src="https://img.shields.io/badge/OpenStack-Trusty-red?logo=openstack" alt="OpenStack"> <img src="https://img.shields.io/badge/IDS-Suricata-ff6600?logo=suricata" alt="Suricata"> <img src="https://img.shields.io/badge/SIEM-ELK%20Stack-005571?logo=elastic" alt="ELK"> <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License"> <img src="https://img.shields.io/badge/Python-3.10-blue?logo=python" alt="Python"> <img src="https://img.shields.io/badge/Status-Test%20Environment-lightgrey" alt="Test"> </p><p align="center"> <b>Course Project:</b> NT524.Q11.ANTT – Cloud Computing Architecture and Security<b>Team 8:</b> Huỳnh Đăng Khoa (23520737) · Khiếu Bảo Lâm (23520830) </p>
-
+<p align="center"> <img src="https://img.shields.io/badge/OpenStack-Yoga-red?logo=openstack"> <img src="https://img.shields.io/badge/IDS-Suricata-ff6600?logo=suricata"> <img src="https://img.shields.io/badge/SIEM-ELK%20Stack-005571?logo=elastic"> <img src="https://img.shields.io/badge/Python-3.10-blue?logo=python"> <img src="https://img.shields.io/badge/Status-Lab%20Environment-lightgrey"> <img src="https://img.shields.io/badge/License-MIT-yellow.svg"> </p> <p align="center"> <b>Course Project:</b> NT524 – Cloud Computing Architecture & Security <br> <b>Team 8:</b> Huỳnh Đăng Khoa · Khiếu Bảo Lâm </p>
 📖 Table of Contents
+
+Introduction
+
+Objectives
+
+Key Features
+
+Architecture Overview
+
+Network Topology
+
+Data Flow
+
+Decision Logic
+
+Core Components
+
+Honeypot Design
+
+Automatic Redirection Mechanism
+
+SIEM & Log Processing
+
+Demo Scenarios
+
+Results
+
+Disclaimer
+
 🌟 Introduction
+
+In modern cloud environments, services such as SSH, web applications, object storage (S3), and databases (RDS) are frequent targets of cyberattacks. These services are often exposed due to misconfiguration, weak credentials, or improper access control.
+
+Studies show that publicly exposed cloud resources can be discovered and exploited within minutes using automated scanning tools.
+
+Traditional defensive mechanisms such as firewalls or passive intrusion detection systems are no longer sufficient to handle evolving threats. Instead of only blocking attackers, a more effective approach is to observe and understand their behavior.
+
+This project proposes a proactive defense architecture by combining intrusion detection with a honeypot system. When suspicious activity is detected, the attacker is not blocked immediately but is transparently redirected into a controlled, simulated environment.
+
+This approach allows the system to:
+
+Protect real services from compromise
+
+Collect valuable threat intelligence
+
+Analyze attacker techniques in depth
+
+🎯 Objectives
+
+The system is designed with the following goals:
+
+1. Real-time attack detection
+
+Analyze network traffic using an IDS to identify malicious behavior such as brute-force attacks, scanning, and service exploitation.
+
+2. Automatic traffic redirection
+
+Redirect malicious traffic to honeypots instead of allowing access to real services.
+
+3. Cloud service simulation
+
+Deploy multiple honeypots that mimic real-world cloud services, including:
+
+SSH servers
+
+Web applications
+
+Object storage (S3)
+
+Relational databases
+
+4. Centralized log collection and analysis
+
+Collect logs from multiple sources and process them using a SIEM system.
+
+5. MITRE ATT&CK mapping
+
+Classify attacker behavior based on standardized attack techniques.
 
 ✨ Key Features
 
-🏗️ Overall Architecture
+Real-time intrusion detection using Suricata IDS
 
-🌐 Network Topology
+Automatic DNAT-based redirection of malicious traffic
 
-🧩 Core Components
+Multi-service honeypot environment
+
+Centralized logging with ELK Stack
+
+GeoIP-based attacker tracking
+
+MITRE ATT&CK technique mapping
+
+Fully deployed on OpenStack private cloud
+
+🏗️ Architecture Overview
+
+The system is divided into four main layers:
 
 1. Controller Gateway
 
-2. Analyzer (Suricata IDS + Orchestrator)
+Acts as the entry point for all incoming traffic. It is responsible for routing traffic, performing NAT operations, and enforcing redirection rules.
+
+2. Analyzer (Detection Layer)
+
+This component analyzes mirrored traffic using Suricata IDS. It detects attacks and generates alerts that trigger automated responses.
 
 3. Honeypot Zone
 
-3.1 T-Pot (SSH & HTTP)
+An isolated network containing decoy services designed to simulate real cloud environments and capture attacker interactions.
 
-3.2 MinIO (Fake S3)
+4. SIEM Layer
 
-3.3 MySQL (Fake RDS)
-
-4. SIEM Layer (ELK Stack)
-
-⚙️ Automatic Redirection Mechanism
-
-🚀 Deployment Guide
-
-🎬 Demo Scenarios
-
-📊 Achieved Results
-
-📚 References
-
-👥 Authors
-
-🌟 Introduction
-In cloud computing, services like object storage (S3), relational databases (RDS), and SSH are frequently misconfigured, leading to rapid compromise. According to research, exposed cloud resources can be discovered and exploited within minutes. Traditional passive defenses (firewalls, signature‑based detection) are insufficient against evolving threats.
-
-This project implements a proactive defense system on an OpenStack private cloud using:
-
-Suricata IDS for real‑traffic analysis.
-
-A network of honeypots emulating popular cloud services.
-
-Automatic traffic redirection (DNAT) to isolate attackers into decoy environments.
-
-ELK Stack for centralized logging, enrichment, and visualization mapped to MITRE ATT&CK.
-
-The system not only protects real assets but also gathers valuable threat intelligence by recording attacker behavior in a controlled environment.
-
-All testing was performed in an isolated lab environment – no real Internet traffic was ever directed to the honeypots. This project is a proof‑of‑concept and should not be deployed on production networks without extensive security review.
-
-✨ Key Features
-🔍 Real‑time attack detection using custom Suricata rules with MITRE ATT&CK tagging.
-
-🔄 Automatic traffic redirection (DNAT) based on detection events.
-
-🧪 Multi‑service honeypots:
-
-SSH (Cowrie) – logs all commands and file transfers.
-
-HTTP (Honeytrap) – logs requests, serves fake pages.
-
-S3‑compatible object storage (MinIO) – logs API calls.
-
-MySQL / RDS (custom emulator) – logs connections and SQL queries.
-
-📈 Centralized logging & analysis with ELK Stack (Elasticsearch, Logstash, Kibana) + Filebeat.
-
-🗺️ Geolocation of attackers via GeoIP.
-
-🏷️ MITRE ATT&CK mapping (T1110, T1595, T1530, T1213, etc.).
-
-🧱 Fully deployed on OpenStack using VMs and OVS mirroring.
-
-🏗️ Overall Architecture
-![Architecture](architecture.png)
-
-The architecture is divided into four logical zones:
-
-Zone	Role	Technologies
-Controller	Entry point for all external traffic; performs DNAT redirection.	Ubuntu, iptables, Linux bridge
-Analyzer	Receives mirrored traffic; detects attacks; commands redirection.	Suricata, Python
-Honeypot Zone	Isolated network with decoy services.	T‑Pot, MinIO, custom MySQL emulator
-SIEM Layer	Aggregates, enriches, and visualizes logs.	Elasticsearch, Logstash, Kibana, Filebeat
-Data Flow:
-
-Ingress: Traffic arrives at Controller (floating IP).
-
-Mirroring: A copy is sent to Analyzer via OVS port mirroring.
-
-Detection: Suricata analyzes traffic; on alert, logs to fast.log.
-
-Orchestration: Python script monitors logs, extracts attacker IP, and sends DNAT command to Controller.
-
-Redirection: Controller adds iptables DNAT rule forwarding the attacker's subsequent packets to the appropriate honeypot.
-
-Interaction: Attacker unknowingly interacts with honeypot; actions are logged.
-
-Collection: Filebeat ships logs to Logstash.
-
-Processing: Logstash parses, enriches (GeoIP, MITRE tags), and sends to Elasticsearch.
-
-Visualization: Kibana dashboards display attack data.
+Handles log aggregation, processing, storage, and visualization using the ELK Stack.
 
 🌐 Network Topology
-![Network Topology](topology.png)
 
-The network is segmented for security:
+The system is segmented into multiple isolated networks:
 
-External Network – Provides floating IP to Controller.
+External Network
+Provides public access via floating IP assigned to the Controller.
 
-Management Network – Communication between Analyzer and Controller (SSH).
+Management Network
+Used for secure communication between Analyzer and Controller.
 
-Honeypot Network (10.10.30.0/24) – Hosts all honeypot VMs, isolated from Internet.
+Honeypot Network
+Hosts all honeypot instances and is isolated from external access.
 
-Real Application Network – Hosts genuine services (e.g., OWASP Juice Shop on port 80, real SSH on port 64295).
+Real Application Network
+Contains legitimate services accessible only to valid users.
 
-Each honeypot VM has a single NIC on the Honeypot Network and security groups allowing only necessary inbound ports (from Controller) and outbound to Logstash.
+This segmentation ensures that attackers cannot directly access real services.
+
+🔄 Data Flow
+
+The system operates through the following workflow:
+
+Incoming traffic reaches the Controller via a floating IP.
+
+The Controller mirrors traffic to the Analyzer.
+
+Suricata analyzes the mirrored traffic in real time.
+
+When an attack is detected, an alert is generated.
+
+A Python script processes the alert and extracts attacker information.
+
+The script sends a command to the Controller.
+
+The Controller updates its NAT rules.
+
+The attacker is redirected to the honeypot.
+
+All attacker interactions are logged and forwarded to the SIEM system.
+
+🧠 Decision Logic
+
+The system differentiates between legitimate and malicious traffic:
+
+Legitimate traffic → forwarded to real services
+
+Malicious traffic → redirected to honeypots
+
+A key strategy used is:
+
+Real services are deployed on non-standard ports
+
+Honeypots listen on default ports (e.g., 22, 80, 3306)
+
+This increases the likelihood that attackers interact with honeypots instead of real systems.
 
 🧩 Core Components
-1. Controller Gateway
-Role: Acts as the ingress point, performs DNAT redirection based on commands from Analyzer.
+🔹 Suricata IDS
 
-Key functions: IP forwarding, NAT masquerading, dynamic iptables updates.
+Suricata performs deep packet inspection and detects threats based on custom rules. It operates passively by analyzing mirrored traffic without affecting performance.
 
-Security: SSH access restricted to management network.
+It can detect:
 
-2. Analyzer (Suricata IDS + Orchestrator)
-Role: Inspects mirrored traffic, detects attacks, and triggers redirection.
+SSH brute-force attacks
 
-Components:
+HTTP scanning and probing
 
-Suricata with custom rules (including MITRE ATT&CK metadata).
+Database attacks
 
-Python script that tails Suricata logs, extracts attacker IP, and sends SSH commands to Controller.
+Object storage enumeration
 
-Rules cover: SSH brute‑force, HTTP probing, MySQL brute‑force, MinIO API scanning, etc.
+🔹 Python Orchestrator
 
-3. Honeypot Zone
-3.1 T‑Pot (SSH & HTTP)
-Cowrie: Medium‑interaction SSH honeypot; logs credentials, commands, file transfers.
+The orchestrator script automates system response:
 
-Honeytrap: Low‑interaction HTTP honeypot; logs requests, serves fake pages.
+Continuously monitors IDS logs
 
-Logs are stored in JSON format.
+Extracts attacker IP addresses
 
-3.2 MinIO (Fake S3)
-MinIO server configured as an S3‑compatible object store.
+Identifies attack types
 
-Pre‑created fake buckets and objects.
+Sends remote commands to the Controller
 
-Logs all API calls (ListBuckets, GetObject, PutObject) in JSON.
+Updates firewall rules dynamically
 
-3.3 MySQL (Fake RDS)
-Custom Python emulator that mimics MySQL protocol (handshake, auth, query responses).
+🔹 Controller
 
-No real data; responds with fake tables.
+The Controller acts as a network gateway and enforcement point. It applies NAT rules and redirects traffic based on instructions from the Analyzer.
 
-Logs connections and SQL queries in JSON.
+🧪 Honeypot Design
+1. SSH Honeypot
 
-4. SIEM Layer (ELK Stack)
-Filebeat: Installed on all honeypots and Analyzer to ship logs.
+Simulates an SSH server and allows attackers to log in using fake credentials. It records all login attempts and commands executed.
 
-Logstash: Pipelines parse logs, enrich with GeoIP, add MITRE tags, and send to Elasticsearch.
+2. HTTP Honeypot
 
-Elasticsearch: Stores indexed logs.
+Simulates a web server and captures requests, payloads, and scanning activities.
 
-Kibana: Dashboards for attack maps, MITRE technique distribution, real‑time events, top attackers.
+3. Fake S3 (MinIO)
+
+Mimics an object storage service with fake buckets and files. It logs all API interactions such as listing and uploading objects.
+
+4. MySQL Honeypot
+
+Simulates a database server and responds with fake data. It captures login attempts and SQL queries executed by attackers.
 
 ⚙️ Automatic Redirection Mechanism
-Log Monitoring: Python script continuously reads Suricata's fast.log using tail -F.
 
-IP Extraction: Regex extracts attacker IP and alert message.
+The redirection process works as follows:
 
-Attack Classification: Simple keyword matching determines the attack type (SSH, HTTP, MySQL, MinIO).
+IDS logs are continuously monitored
 
-SSH to Controller: Script connects to Controller via Paramiko (key‑based auth).
+Attacker IP is extracted
 
-Rule Check: Verifies if a DNAT rule for that IP already exists.
+Existing rules are checked to avoid duplication
 
-DNAT Injection: If not, adds an iptables rule:
+A new redirection rule is applied if necessary
 
-text
-iptables -t nat -A PREROUTING -s <IP> -p tcp --dport <PORT> -j DNAT --to-destination <HONEYPOT_IP>:<PORT>
-Persistence: Rules are saved with iptables-save (optional).
+All future traffic from the attacker is redirected
 
-This redirection is transparent to the attacker.
+This process is fully automated and operates in near real-time.
 
-🚀 Deployment Guide
-Prerequisites
-OpenStack (Yoga+) with Neutron, Nova.
+📊 SIEM & Log Processing
+Log Collection
 
-Ubuntu 22.04 images, flavor m1.medium (2 vCPU, 4GB RAM) for VMs.
+Logs are collected from:
 
-Security groups configured for required ports.
+Suricata IDS
 
-High‑Level Steps
-Create networks: external, management, honeypot, real-app.
+Honeypot services
 
-Launch VMs: Controller, Analyzer, T‑Pot, MinIO, MySQL, ELK.
+Processing
 
-Configure Controller: IP forwarding, NAT, iptables.
+Logstash parses and enriches data by:
 
-Set up OVS mirroring from Controller’s internal port to Analyzer.
+Extracting fields
 
-Install Suricata on Analyzer with custom rules.
+Adding GeoIP information
 
-Deploy honeypots (T‑Pot, MinIO, custom MySQL).
+Mapping MITRE ATT&CK techniques
 
-Install ELK and configure Logstash pipelines.
+Storage
 
-Install Filebeat on all honeypots and Analyzer.
+Elasticsearch stores logs in a structured format for fast querying.
 
-Run Python orchestrator on Analyzer.
+Visualization
 
-Detailed commands are available in the project documentation.
+Kibana provides dashboards for:
+
+Attack visualization
+
+Real-time monitoring
+
+Threat analysis
+
+Attacker tracking
 
 🎬 Demo Scenarios
-Scenario 1: SSH Brute‑Force
-Attacker uses Hydra on port 22.
 
-Suricata triggers rule T1110.
+This section demonstrates how the system behaves under different attack scenarios. Each scenario follows the same pipeline:
 
-Redirector adds DNAT rule; attacker is sent to Cowrie.
+Detection → Alert → Redirection → Deception → Logging → Visualization
 
-Cowrie logs login attempts and commands.
+The goal is not only to block attacks, but to observe attacker behavior in a controlled environment.
 
-Kibana shows events with MITRE tag T1110.
+🔐 Scenario 1: SSH Brute-force Attack
+🧪 Description
 
-Scenario 2: HTTP Probing
-Attacker requests /admin.
+In this scenario, an attacker attempts to gain unauthorized access to the system by performing a brute-force attack on the SSH service.
 
-Suricata detects (T1595) and redirects to Honeytrap.
+The system is designed to:
 
-Honeytrap logs request; Kibana tags T1595.
+Detect abnormal login attempts
 
-Scenario 3: MinIO (Fake S3) Attack
-Attacker scans port 9000, attempts to list buckets.
+Redirect the attacker to a fake SSH server (honeypot)
 
-Suricata detects MinIO API scan (T1595) and redirects to MinIO honeypot.
+Record all attacker activities
 
-Attacker sees fake buckets and may upload files.
+⚙️ Attack Execution
 
-MinIO logs API calls; Kibana tags T1595 (scanning) and T1530 (data access).
+The attacker uses automated tools (e.g., Hydra) to repeatedly attempt login with different username/password combinations against the public IP of the system.
 
-Scenario 4: MySQL (Fake RDS) Attack
-Attacker connects to port 3306.
+This generates:
 
-All traffic is DNAT‑ed to MySQL honeypot.
+High-frequency connection attempts
 
-Attacker logs in and runs SQL queries.
+Repeated authentication failures
 
-Honeypot logs queries; Kibana tags T1110 (brute‑force) and T1213 (data from repositories).
+Suspicious traffic patterns
 
-📊 Achieved Results
-Redirection latency: < 2 seconds.
+🔍 Detection Phase
 
-Detection accuracy: Successfully identified all test attacks.
+The Analyzer receives mirrored traffic and processes it using Suricata.
 
-Log volume: Processed >50,000 events during testing.
+Suricata identifies:
 
-MITRE mapping: Automated tagging for multiple techniques.
+Multiple failed login attempts
 
-Kibana dashboards: Provided clear visibility into attacker behavior and geography.
+High request rate within a short time window
 
-All testing was performed in an isolated lab environment. The system is a proof‑of‑concept for educational purposes.
+An alert is generated and tagged with:
+
+MITRE ATT&CK: T1110 (Brute Force)
+
+🔄 Redirection Phase
+
+Once the attack is confirmed:
+
+The system extracts the attacker’s IP address
+
+A redirection rule is dynamically applied at the Controller
+
+All subsequent SSH traffic from that IP is redirected
+
+👉 Instead of reaching the real SSH service, the attacker is now interacting with a honeypot.
+
+🎭 Deception Phase
+
+The attacker successfully logs in using weak credentials and believes they have compromised the system.
+
+However:
+
+The environment is completely simulated
+
+No real system access is granted
+
+The honeypot mimics a real Linux system and allows:
+
+Command execution
+
+File interaction
+
+📊 Logging & Analysis
+
+All attacker actions are recorded:
+
+Username and password attempts
+
+Commands executed (e.g., whoami, ls, cat /etc/passwd)
+
+Session duration and behavior
+
+These logs are:
+
+Converted into structured JSON
+
+Sent to the SIEM system
+
+Visualized in Kibana dashboards
+
+🌐 Scenario 2: HTTP Scanning & Probing
+🧪 Description
+
+This scenario simulates an attacker performing reconnaissance by probing web endpoints.
+
+⚙️ Attack Execution
+
+The attacker sends crafted HTTP requests such as:
+
+Accessing sensitive endpoints (/admin, /login)
+
+Sending unusual payloads
+
+Using automated scanning tools
+
+🔍 Detection Phase
+
+Suricata detects abnormal behavior based on:
+
+Suspicious URL patterns
+
+Non-human browsing behavior
+
+Known scanning signatures
+
+MITRE classification:
+
+T1595 (Active Scanning)
+
+🔄 Redirection Phase
+
+After detection:
+
+The attacker is silently redirected
+
+Traffic is no longer forwarded to the real web application
+
+🎭 Deception Phase
+
+The attacker is now interacting with a fake web service:
+
+Receives realistic HTTP responses
+
+Believes the system is vulnerable
+
+Continues probing deeper
+
+📊 Logging & Analysis
+
+The system records:
+
+Requested URLs
+
+HTTP methods (GET, POST, etc.)
+
+Payloads and parameters
+
+User-Agent (tools used by attacker)
+
+☁️ Scenario 3: Object Storage (Fake S3 / MinIO Attack)
+🧪 Description
+
+This scenario simulates attacks targeting cloud object storage services, which are often misconfigured and publicly exposed.
+
+⚙️ Attack Execution
+
+The attacker:
+
+Scans for open S3-compatible endpoints
+
+Attempts to brute-force credentials
+
+Tries to list buckets or access stored data
+
+🔍 Detection Phase
+
+Suricata detects:
+
+API probing behavior
+
+Repeated authentication attempts
+
+MITRE classification:
+
+T1595 (Scanning)
+
+T1530 (Data from Cloud Storage)
+
+🔄 Redirection Phase
+
+Once flagged:
+
+The attacker is redirected to a fake MinIO service
+
+The real storage system is completely isolated
+
+🎭 Deception Phase
+
+The honeypot provides:
+
+Fake buckets
+
+Fake sensitive files
+
+Weak credentials for easy access
+
+The attacker may:
+
+List buckets
+
+Download files
+
+Upload malicious content
+
+📊 Logging & Analysis
+
+Captured data includes:
+
+API calls (ListBucket, GetObject, PutObject)
+
+Access credentials used
+
+Uploaded files
+
+Interaction patterns
+
+🗄️ Scenario 4: Database Attack (Fake MySQL / RDS)
+🧪 Description
+
+This scenario demonstrates attacks targeting publicly exposed database services.
+
+⚙️ Attack Execution
+
+The attacker:
+
+Connects to port 3306
+
+Attempts login with common credentials
+
+Executes SQL queries
+
+🔍 Detection Phase
+
+Unlike other services:
+
+👉 All external MySQL connections are considered malicious
+
+No real database is exposed.
+
+🔄 Redirection Phase
+
+All database traffic is automatically redirected
+
+No access to real data is ever granted
+
+🎭 Deception Phase
+
+The attacker interacts with a simulated MySQL server:
+
+Receives realistic responses
+
+Sees fake tables and data
+
+Believes they have compromised the database
+
+📊 Logging & Analysis
+
+The system logs:
+
+Login attempts
+
+Executed SQL queries
+
+Data extraction attempts
+
+MITRE classification:
+
+T1110 (Brute Force)
+
+T1213 (Data from Information Repositories)
+
+🎥 Demo Video
+<p align="center"> <a href="https://drive.google.com/drive/folders/1-ASvfGYQs8oLcXdMXsbLzcvJfMdoVuuf?usp=drive_link"> <img src="https://img.shields.io/badge/🎬 Watch%20Demo-Click%20Here-blue?style=for-the-badge"> </a> </p>
+
+📌 The demo showcases real attack simulations, automatic redirection, and attacker interaction with honeypots.
