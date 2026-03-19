@@ -1,251 +1,308 @@
-☁️ Cloud Honeypot on OpenStack
-<p align="center"> <img src="https://img.shields.io/badge/OpenStack-Yoga-red?logo=openstack"> <img src="https://img.shields.io/badge/IDS-Suricata-ff6600?logo=suricata"> <img src="https://img.shields.io/badge/SIEM-ELK%20Stack-005571?logo=elastic"> <img src="https://img.shields.io/badge/Python-3.10-blue?logo=python"> <img src="https://img.shields.io/badge/Status-Lab%20Environment-lightgrey"> <img src="https://img.shields.io/badge/License-MIT-yellow.svg"> </p> <p align="center"> <b>Cloud-Based Proactive Defense using IDS + Honeypot + SIEM</b><br> NT524 – Cloud Computing Architecture & Security <br> <b>Team 8:</b> Huỳnh Đăng Khoa · Khiếu Bảo Lâm </p>
-📖 Table of Contents
+<div align="center">
 
-    🌟 Introduction
+# ☁️ Cloud Honeypot on OpenStack
 
-    🎯 Objectives
+<p>
+  <img src="https://img.shields.io/badge/OpenStack-Yoga-red?logo=openstack&logoColor=white&style=for-the-badge">
+  <img src="https://img.shields.io/badge/IDS-Suricata-ff6600?logo=suricata&logoColor=white&style=for-the-badge">
+  <img src="https://img.shields.io/badge/SIEM-ELK%20Stack-005571?logo=elastic&logoColor=white&style=for-the-badge">
+  <img src="https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white&style=for-the-badge">
+</p>
+<p>
+  <img src="https://img.shields.io/badge/Status-Lab%20Environment-lightgrey?style=for-the-badge">
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge">
+</p>
 
-    ✨ Key Features
+### 🛡️ Cloud-Based Proactive Defense using IDS + Honeypot + SIEM
 
-    🏗️ Architecture Overview
+**NT524 – Cloud Computing Architecture & Security**
 
-    🌐 Network Topology
+**Team 8:** Huỳnh Đăng Khoa · Khiếu Bảo Lâm
 
-    🔄 Data Flow
+</div>
 
-    🧠 Decision Logic
+---
 
-    🧩 Core Components
+## 📖 Table of Contents
 
-    🧪 Honeypot Design
+- [🌟 Introduction](#-introduction)
+- [🎯 Objectives](#-objectives)
+- [✨ Key Features](#-key-features)
+- [🏗️ Architecture Overview](#-architecture-overview)
+- [🌐 Network Topology](#-network-topology)
+- [🔄 Data Flow](#-data-flow)
+- [🧠 Decision Logic](#-decision-logic)
+- [🧩 Core Components](#-core-components)
+- [🧪 Honeypot Design](#-honeypot-design)
+- [⚙️ Automatic Redirection](#-automatic-redirection-mechanism)
+- [📊 SIEM & Log Processing](#-siem--log-processing)
+- [🎬 Demo Scenarios](#-demo-scenarios)
+- [📈 Results](#-results)
 
-    ⚙️ Automatic Redirection
+---
 
-    📊 SIEM & Log Processing
+## 🌟 Introduction
 
-    🎬 Demo Scenarios
+In modern cloud environments, services such as **SSH**, **web applications**, **object storage (S3)**, and **databases (RDS)** are frequent targets of cyberattacks. These services are often exposed due to misconfiguration, weak credentials, or improper access control.
 
-    📈 Results
+> 💡 Studies show that publicly exposed cloud resources can be **discovered and exploited within minutes** using automated scanning tools.
 
-🌟 Introduction
+Traditional defensive mechanisms such as firewalls or passive intrusion detection systems are no longer sufficient to handle evolving threats. Instead of only blocking attackers, a more effective approach is to **observe and understand their behavior**.
 
-In modern cloud environments, services such as SSH, web applications, object storage (S3), and databases (RDS) are frequent targets of cyberattacks. These services are often exposed due to misconfiguration, weak credentials, or improper access control.
-
-Studies show that publicly exposed cloud resources can be discovered and exploited within minutes using automated scanning tools.
-
-Traditional defensive mechanisms such as firewalls or passive intrusion detection systems are no longer sufficient to handle evolving threats. Instead of only blocking attackers, a more effective approach is to observe and understand their behavior.
-
-This project proposes a proactive defense architecture by combining intrusion detection with a honeypot system. When suspicious activity is detected, the attacker is not blocked immediately but is transparently redirected into a controlled, simulated environment.
+This project proposes a **proactive defense architecture** by combining intrusion detection with a honeypot system. When suspicious activity is detected, the attacker is **not blocked immediately** but is transparently redirected into a controlled, simulated environment.
 
 This approach allows the system to:
+- 🔒 Protect real services from compromise
+- 🧠 Collect valuable threat intelligence
+- 🔬 Analyze attacker techniques in depth
 
-    Protect real services from compromise
+---
 
-    Collect valuable threat intelligence
+## 🎯 Objectives
 
-    Analyze attacker techniques in depth
+| # | Goal |
+|---|------|
+| 🔍 | Detect attacks in real time using IDS |
+| 🔄 | Automatically redirect attackers |
+| 🧪 | Simulate real cloud services (SSH, HTTP, S3, MySQL) |
+| 📊 | Centralize logs using SIEM |
+| 🏷️ | Map attacks to MITRE ATT&CK |
 
-🎯 Objectives
+---
 
-🔍 Detect attacks in real time using IDS
+## ✨ Key Features
 
-🔄 Automatically redirect attackers
+- ⚡ **Real-time detection** with Suricata IDS
+- 🔀 **Automatic DNAT redirection** — transparent to attackers
+- 🎭 **Multi-service honeypot** environment (SSH, HTTP, S3, MySQL)
+- 📦 **Centralized logging** via ELK Stack
+- 🌍 **GeoIP-based** attacker tracking
+- 🗺️ **MITRE ATT&CK** framework mapping
+- ☁️ **Fully deployed** on OpenStack
 
-🧪 Simulate real cloud services (SSH, HTTP, S3, MySQL)
+---
 
-📊 Centralize logs using SIEM
+## 🏗️ Architecture Overview
 
-🏷️ Map attacks to MITRE ATT&CK
+<div align="center">
+  <img src="architecture.png" width="80%" alt="Architecture Diagram">
+</div>
 
-✨ Key Features
+### System Layers
 
-Real-time detection with Suricata IDS
+| Layer | Description |
+|-------|-------------|
+| 🎛️ **Controller** | Entry point, NAT, redirection logic |
+| 🔬 **Analyzer** | Traffic inspection & threat detection |
+| 🍯 **Honeypot Zone** | Isolated fake cloud services |
+| 📊 **SIEM Layer** | Centralized logging & visualization |
 
-Automatic DNAT redirection
+---
 
-Multi-service honeypot environment
+## 🌐 Network Topology
 
-Centralized logging (ELK Stack)
+<div align="center">
+  <img src="topology.png" width="80%" alt="Network Topology">
+</div>
 
-GeoIP-based attacker tracking
+### Network Segments
 
-MITRE ATT&CK mapping
+| Network | Role |
+|---------|------|
+| 🌐 **External Network** | Public internet access |
+| 🔧 **Management Network** | Control plane traffic (SSH) |
+| 🍯 **Honeypot Network** | Isolated fake service zone |
+| 🔒 **Real App Network** | Protected production services |
 
-Fully deployed on OpenStack
+---
 
-🏗️ Architecture Overview
-<p align="center"> <img src="architecture.png" width="80%"> </p>
-🔹 System Layers
-        Layer	                  Description
-Controller	            Entry point, NAT, redirection
-Analyzer	            Traffic inspection & detection
-Honeypot Zone	        Fake services
-SIEM Layer	            Logging & visualization
-🌐 Network Topology
-<p align="center"> <img src="topology.png" width="80%"> </p>
-🔹 Networks
+## 🔄 Data Flow
 
-External Network → Public access
-
-Management Network → Control traffic (SSH)
-
-Honeypot Network → Isolated fake services
-
-Real App Network → Protected real services
-
-🔄 Data Flow
+```
 Internet → Controller → Analyzer → Detection → Redirect → Honeypot → ELK
-Flow Explanation
+```
 
-Traffic enters Controller
+### Step-by-Step Flow
 
-Mirrored to Analyzer
+```
+1. 🌐  Traffic enters Controller
+2. 🪞  Mirrored to Analyzer
+3. 🔍  Suricata analyzes packets
+4. 🚨  Attack detected → alert generated
+5. 🐍  Python script processes the alert
+6. 🔀  Controller updates NAT rules
+7. 🍯  Attacker redirected to Honeypot
+8. 📦  All logs shipped to ELK
+```
 
-Suricata analyzes
+---
 
-Attack detected
+## 🧠 Decision Logic
 
-Python script processes alert
+| Traffic Type | Action |
+|--------------|--------|
+| ✅ Legitimate | Forward to real service |
+| 🚨 Malicious | Redirect to honeypot |
 
-Controller updates NAT rules
+### Strategy
 
-Attacker redirected
+> **Real services** run on **non-standard ports**
+> **Honeypots** listen on **default ports**
 
-Logs sent to ELK
+```
+👉 Attackers are naturally trapped — no magic needed.
+```
 
-🧠 Decision Logic
-Traffic	Action
-Legitimate	Forward to real service
-Malicious	Redirect to honeypot
-Strategy
+---
 
-Real services → non-standard ports
+## 🧩 Core Components
 
-Honeypots → default ports
+### 🔷 Suricata IDS
+- Deep packet inspection (DPI)
+- Detects brute-force, port scanning, and exploitation attempts
+- Generates structured EVE JSON alerts
 
-👉 Attackers are naturally trapped.
+### 🔷 Python Orchestrator
+- Reads IDS logs in real-time using `tail -f` or inotify
+- Extracts attacker IP from alert events
+- Triggers DNAT redirection via API or shell commands
 
-🧩 Core Components
-🔹 Suricata IDS
+### 🔷 Controller Node
+- Manages OpenStack router / iptables NAT rules
+- Controls all inbound/outbound traffic flow
+- Single point of redirection enforcement
 
-Deep packet inspection
+---
 
-Detects brute-force, scanning, exploitation
+## 🧪 Honeypot Design
 
-🔹 Python Orchestrator
+| Service | Description |
+|---------|-------------|
+| 🔐 **SSH** | Fake login shell + full command logging |
+| 🌐 **HTTP** | Fake web server with trap endpoints |
+| ☁️ **S3 (MinIO)** | Fake cloud object storage |
+| 🗄️ **MySQL** | Fake database with query capture |
 
-Reads logs in real-time
+---
 
-Extracts attacker IP
+## ⚙️ Automatic Redirection Mechanism
 
-Triggers redirection
+### Workflow
 
-🔹 Controller
+```
+📡 Monitor IDS logs
+    ↓
+🔎 Extract attacker IP from alert
+    ↓
+📋 Check for existing DNAT rules
+    ↓
+✏️  Apply new DNAT rule via iptables/OpenStack
+    ↓
+🍯 All future traffic → Honeypot
+```
 
-Applies NAT rules
+| Property | Value |
+|----------|-------|
+| ✅ Automation | Fully automated |
+| ⚡ Latency | < 2 seconds |
+| 🔁 Persistence | Rules survive session |
 
-Controls traffic flow
+---
 
-🧪 Honeypot Design
-Service	Description
-SSH	Fake login + command logging
-HTTP	Fake web server
-S3 (MinIO)	Fake cloud storage
-MySQL	Fake database
-⚙️ Automatic Redirection Mechanism
-Workflow
+## 📊 SIEM & Log Processing
 
-Monitor IDS logs
+### Pipeline
 
-Extract attacker IP
-
-Check existing rules
-
-Apply DNAT rule
-
-Redirect all future traffic
-
-✅ Fully automated
-⚡ Near real-time (<2s)
-
-📊 SIEM & Log Processing
-Pipeline
+```
 Filebeat → Logstash → Elasticsearch → Kibana
-Features
+```
 
-Centralized logging
+### Features
 
-GeoIP enrichment
+- 📦 **Centralized logging** from all honeypot nodes
+- 🗺️ **MITRE ATT&CK** technique mapping per event
+- 📊 **Real-time Kibana dashboards** with GeoIP visualization
+- 🔎 **Full-text search** across 50,000+ events
 
-MITRE mapping
+---
 
-Real-time dashboards
+## 🎬 Demo Scenarios
 
-🎬 Demo Scenarios
+> **Full flow:** 🔁 Detection → Redirection → Deception → Logging → Visualization
 
-🔁 Detection → Redirection → Deception → Logging → Visualization
+---
 
-🔐 SSH Brute-force Attack
+### 🔐 SSH Brute-force Attack
 
-Attacker runs brute-force tool
+1. Attacker runs automated brute-force tool
+2. Suricata detects abnormal login attempts
+3. Python script triggers DNAT redirection
+4. Attacker is silently moved to SSH honeypot
 
-Suricata detects abnormal login attempts
+**Result:**
+- Fake login succeeds (attacker thinks they're in)
+- All commands executed are captured and logged
 
-Attacker is redirected to SSH honeypot
+---
 
-🎭 Result
+### 🌐 HTTP Reconnaissance
 
-Fake login succeeds
+1. Attacker scans endpoints (`/admin`, `/login`, `/.env`)
+2. Detected as web reconnaissance / directory traversal
+3. Redirected to fake web server
 
-Attacker executes commands
+**Result:**
+- Full request payload + User-Agent logged
+- Attacker explores decoy endpoints
 
-All activity is logged
+---
 
-🌐 HTTP Scanning
+### ☁️ S3 / Object Storage Attack
 
-Attacker scans endpoints (/admin, /login)
+1. Attacker scans for open MinIO buckets
+2. Attempts to list or access objects
 
-Detected as reconnaissance
+**Result:**
+- Redirected to fake S3 instance
+- All upload/download/list operations captured
 
-🎭 Result
+---
 
-Redirected to fake web server
+### 🗄️ MySQL Attack
 
-Logs include payload + User-Agent
+1. Attacker connects to port `3306`
+2. Attempts authentication + SQL queries
 
-☁️ S3 Attack (MinIO)
+**Result:**
+- Redirected to fake database
+- All SQL queries captured and indexed in ELK
 
-Attacker scans object storage
+---
 
-Attempts to access buckets
+### 🎥 Demo Video
 
-🎭 Result
+<div align="center">
 
-Interacts with fake S3
+[![Watch Full Demo](https://img.shields.io/badge/🎬%20Watch%20Full%20Demo-Drive-blue?style=for-the-badge&logo=google-drive)](https://drive.google.com/drive/folders/1-ASvfGYQs8oLcXdMXsbLzcvJfMdoVuuf?usp=drive_link)
 
-Upload/download logged
+</div>
 
-🗄️ MySQL Attack
+---
 
-Attacker connects to port 3306
+## 📈 Results
 
-Attempts login & queries
+| Metric | Value |
+|--------|-------|
+| ⏱️ Redirection Latency | **< 2 seconds** |
+| 📊 Events Processed | **50,000+** |
+| 🎯 Detection Accuracy | **High** |
+| 📊 Visualization | **Kibana Dashboards** |
 
-🎭 Result
+---
 
-Redirected to fake DB
+<div align="center">
 
-SQL queries captured
+**NT524 · Cloud Computing Architecture & Security**
+**Team 8 · 2024**
 
-🎥 Demo Video
-<p align="center"> <a href="https://drive.google.com/drive/folders/1-ASvfGYQs8oLcXdMXsbLzcvJfMdoVuuf?usp=drive_link"> <img src="https://img.shields.io/badge/🎬 Watch%20Full%20Demo-blue?style=for-the-badge"> </a> </p>
-📈 Results
-
-⏱️ Redirection latency: < 2 seconds
-
-📊 Processed logs: 50,000+ events
-
-🎯 High detection accuracy
-
-📊 Clear visualization via Kibana
+</div>
